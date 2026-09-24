@@ -230,6 +230,8 @@ footer{background:#03101a}
 
 [hidden]{display:none!important}.inquiry-tabs{display:flex;gap:8px;margin-top:30px;max-width:800px}.inquiry-tab{border:1px solid rgba(255,255,255,.35);background:rgba(4,28,45,.7);color:#cbd9e2;padding:11px 18px;border-radius:24px;font-weight:700;cursor:pointer}.inquiry-tab.active{background:#fff;color:#12344e}.receipt-box{max-width:800px;margin:18px 0;padding:22px;background:#eef8ff;color:#163c57;border-left:4px solid #1688ed;border-radius:6px}.receipt-box strong,.receipt-box span,.receipt-box small{display:block}.receipt-box span{font-size:20px;font-weight:800;margin:5px 0}.receipt-box button{margin-top:14px;border:0;background:#116fbd;color:#fff;padding:10px 16px;border-radius:5px;font-weight:700}.lookup-panel{padding:24px!important}.lookup-head{display:flex;justify-content:space-between;gap:12px;align-items:end;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:16px;margin-bottom:16px}.lookup-head b{font-size:20px}.lookup-head span{font-size:12px;color:#a9bac6}.inquiry-item{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.14)}.inq-top{display:flex;justify-content:space-between;gap:10px}.inq-top span{color:#71c3ff;font-weight:700}.inquiry-item h3{margin:12px 0 6px}.inquiry-item p{color:#d5e1e8;white-space:pre-wrap}.inquiry-item time{font-size:12px;color:#91a6b4}.waiting,.reply{margin-top:15px;padding:14px;background:rgba(255,255,255,.07);border-radius:5px}.reply b{color:#71c3ff}.lookup-empty{padding:30px 0;text-align:center;color:#a8bac6}
 @media(max-width:800px){.inquiry-tabs{margin-top:24px}.inquiry-tab{flex:1}.lookup-head{display:block}.lookup-head span{display:block;margin-top:4px}.receipt-box{margin-top:16px}}
+
+@media(max-width:800px){#myInquiry{scroll-margin-top:18px}}
 </style><meta name="robots" content="index,follow">
 <link rel="canonical" href="https://webcaredev.github.io/">
 <meta property="og:title" content="웹사이트 유지보수·개발 | WebCare Dev">
@@ -325,7 +327,7 @@ function showInquiryView(view){
  myInquiry.hidden=write;
  if(write) receiptBox.hidden=true;
  document.querySelectorAll(".inquiry-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
- if(!write) loadMyInquiries();
+ if(!write){ loadMyInquiries(); requestAnimationFrame(()=>setTimeout(()=>myInquiry.scrollIntoView({behavior:"smooth",block:"start"}),60)); }
 }
 document.querySelectorAll(".inquiry-tab").forEach(b=>b.addEventListener("click",()=>showInquiryView(b.dataset.view)));
 
