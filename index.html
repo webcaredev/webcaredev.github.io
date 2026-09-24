@@ -228,7 +228,7 @@ footer{background:#03101a}
  .process-section .step{padding:24px!important;margin-bottom:14px!important;min-height:0!important;border-radius:8px!important}
 }
 
-.inquiry-tabs{display:flex;gap:8px;margin-top:30px;max-width:800px}.inquiry-tab{border:1px solid rgba(255,255,255,.35);background:rgba(4,28,45,.7);color:#cbd9e2;padding:11px 18px;border-radius:24px;font-weight:700;cursor:pointer}.inquiry-tab.active{background:#fff;color:#12344e}.receipt-box{max-width:800px;margin:18px 0;padding:22px;background:#eef8ff;color:#163c57;border-left:4px solid #1688ed;border-radius:6px}.receipt-box strong,.receipt-box span,.receipt-box small{display:block}.receipt-box span{font-size:20px;font-weight:800;margin:5px 0}.receipt-box button{margin-top:14px;border:0;background:#116fbd;color:#fff;padding:10px 16px;border-radius:5px;font-weight:700}.lookup-panel{padding:24px!important}.lookup-head{display:flex;justify-content:space-between;gap:12px;align-items:end;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:16px;margin-bottom:16px}.lookup-head b{font-size:20px}.lookup-head span{font-size:12px;color:#a9bac6}.inquiry-item{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.14)}.inq-top{display:flex;justify-content:space-between;gap:10px}.inq-top span{color:#71c3ff;font-weight:700}.inquiry-item h3{margin:12px 0 6px}.inquiry-item p{color:#d5e1e8;white-space:pre-wrap}.inquiry-item time{font-size:12px;color:#91a6b4}.waiting,.reply{margin-top:15px;padding:14px;background:rgba(255,255,255,.07);border-radius:5px}.reply b{color:#71c3ff}.lookup-empty{padding:30px 0;text-align:center;color:#a8bac6}
+[hidden]{display:none!important}.inquiry-tabs{display:flex;gap:8px;margin-top:30px;max-width:800px}.inquiry-tab{border:1px solid rgba(255,255,255,.35);background:rgba(4,28,45,.7);color:#cbd9e2;padding:11px 18px;border-radius:24px;font-weight:700;cursor:pointer}.inquiry-tab.active{background:#fff;color:#12344e}.receipt-box{max-width:800px;margin:18px 0;padding:22px;background:#eef8ff;color:#163c57;border-left:4px solid #1688ed;border-radius:6px}.receipt-box strong,.receipt-box span,.receipt-box small{display:block}.receipt-box span{font-size:20px;font-weight:800;margin:5px 0}.receipt-box button{margin-top:14px;border:0;background:#116fbd;color:#fff;padding:10px 16px;border-radius:5px;font-weight:700}.lookup-panel{padding:24px!important}.lookup-head{display:flex;justify-content:space-between;gap:12px;align-items:end;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:16px;margin-bottom:16px}.lookup-head b{font-size:20px}.lookup-head span{font-size:12px;color:#a9bac6}.inquiry-item{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.14)}.inq-top{display:flex;justify-content:space-between;gap:10px}.inq-top span{color:#71c3ff;font-weight:700}.inquiry-item h3{margin:12px 0 6px}.inquiry-item p{color:#d5e1e8;white-space:pre-wrap}.inquiry-item time{font-size:12px;color:#91a6b4}.waiting,.reply{margin-top:15px;padding:14px;background:rgba(255,255,255,.07);border-radius:5px}.reply b{color:#71c3ff}.lookup-empty{padding:30px 0;text-align:center;color:#a8bac6}
 @media(max-width:800px){.inquiry-tabs{margin-top:24px}.inquiry-tab{flex:1}.lookup-head{display:block}.lookup-head span{display:block;margin-top:4px}.receipt-box{margin-top:16px}}
 </style><meta name="robots" content="index,follow">
 <link rel="canonical" href="https://webcaredev.github.io/">
@@ -303,49 +303,79 @@ footer{background:#03101a}
 </div></section>
 <script>
 const inquiryForm=document.getElementById("inquiryForm");
-inquiryForm.addEventListener("submit",async(e)=>{
+const receiptBox=document.getElementById("receiptBox");
+const myInquiry=document.getElementById("myInquiry");
+const inquiryList=document.getElementById("inquiryList");
+const lookupEmpty=document.getElementById("lookupEmpty");
+const escMap={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};
+const escapeHtml=v=>String(v??"").replace(/[&<>"']/g,m=>escMap[m]);
+const statusLabel={new:"접수 완료",consulting:"확인·상담중",quoted:"견적 안내",in_progress:"작업 진행중",completed:"완료",spam:"확인 불가"};
+let loadingInquiries=false;
+
+function getSaved(){
+ try{
+  const a=JSON.parse(localStorage.getItem("webcare_inquiries")||"[]");
+  const seen=new Set();
+  return a.filter(x=>x&&x.lookup_token&&!seen.has(x.lookup_token)&&(seen.add(x.lookup_token),true));
+ }catch{return []}
+}
+function showInquiryView(view){
+ const write=view==="write";
+ inquiryForm.hidden=!write;
+ myInquiry.hidden=write;
+ if(write) receiptBox.hidden=true;
+ document.querySelectorAll(".inquiry-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+ if(!write) loadMyInquiries();
+}
+document.querySelectorAll(".inquiry-tab").forEach(b=>b.addEventListener("click",()=>showInquiryView(b.dataset.view)));
+
+async function loadMyInquiries(){
+ if(loadingInquiries)return;
+ loadingInquiries=true;
+ inquiryList.replaceChildren();
+ lookupEmpty.hidden=true;
+ const saved=getSaved();
+ if(!saved.length){lookupEmpty.hidden=false;loadingInquiries=false;return}
+ const loading=document.createElement("div"); loading.className="lookup-empty";loading.textContent="문의 내역을 불러오는 중입니다...";inquiryList.appendChild(loading);
+ try{
+  const results=await Promise.all(saved.map(async x=>{
+   try{
+    const r=await fetch("https://pxoqlvcpbyucafrflyhg.supabase.co/functions/v1/lookup-inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lookup_token:x.lookup_token})});
+    if(!r.ok)return null; return (await r.json()).inquiry;
+   }catch{return null}
+  }));
+  inquiryList.replaceChildren();
+  const valid=results.filter(Boolean);
+  if(!valid.length){lookupEmpty.hidden=false;return}
+  valid.forEach(q=>{
+   const el=document.createElement("article");el.className="inquiry-item";
+   el.innerHTML='<div class="inq-top"><strong>'+escapeHtml(q.public_id)+'</strong><span>'+escapeHtml(statusLabel[q.status]||q.status)+'</span></div><h3>'+escapeHtml(q.inquiry_type)+'</h3><p>'+escapeHtml(q.message)+'</p><time>'+new Date(q.created_at).toLocaleString("ko-KR")+'</time>'+(q.reply?'<div class="reply"><b>WebCare Dev 답변</b><p>'+escapeHtml(q.reply)+'</p></div>':'<div class="waiting">답변을 준비하고 있습니다.</div>');
+   inquiryList.appendChild(el);
+  });
+ }finally{loadingInquiries=false}
+}
+
+inquiryForm.addEventListener("submit",async e=>{
  e.preventDefault();
- const btn=document.getElementById("submitBtn"), status=document.getElementById("formStatus");
- btn.disabled=true; btn.textContent="접수 중..."; status.textContent="";
+ const btn=document.getElementById("submitBtn"),status=document.getElementById("formStatus");
+ if(btn.disabled)return;
+ btn.disabled=true;btn.textContent="접수 중...";status.textContent="문의 내용을 안전하게 저장하고 있습니다.";
  const data=Object.fromEntries(new FormData(inquiryForm).entries());
  try{
   const res=await fetch("https://pxoqlvcpbyucafrflyhg.supabase.co/functions/v1/submit-inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-  if(!res.ok) throw new Error();
+  if(!res.ok)throw new Error();
   const result=await res.json();
   inquiryForm.reset();
-  const saved=JSON.parse(localStorage.getItem("webcare_inquiries")||"[]");
+  const saved=getSaved().filter(x=>x.lookup_token!==result.lookup_token);
   saved.unshift({public_id:result.public_id,lookup_token:result.lookup_token});
   localStorage.setItem("webcare_inquiries",JSON.stringify(saved.slice(0,30)));
   status.textContent="";
-  const box=document.getElementById("receiptBox");
-  box.hidden=false; box.innerHTML='<strong>문의가 접수되었습니다.</strong><span>접수번호 '+escapeHtml(result.public_id)+'</span><small>답변은 ‘내 문의 확인’에서 확인할 수 있습니다.</small><button type="button" onclick="showInquiryView(\'mine\')">내 문의 확인</button>';
- }catch{status.textContent="접수 중 오류가 발생했습니다. 잠시 후 다시 시도하거나 이메일로 문의해주세요.";}
- finally{btn.disabled=false;btn.textContent="문의 접수하기";}
+  receiptBox.hidden=false;
+  receiptBox.innerHTML='<strong>문의가 접수되었습니다.</strong><span>접수번호 '+escapeHtml(result.public_id)+'</span><small>답변은 ‘내 문의 확인’에서 확인할 수 있습니다.</small><button id="receiptLookupBtn" type="button">내 문의 확인</button>';
+  document.getElementById("receiptLookupBtn").addEventListener("click",()=>showInquiryView("mine"),{once:true});
+ }catch{status.textContent="접수 중 오류가 발생했습니다. 잠시 후 다시 시도하거나 이메일로 문의해주세요."}
+ finally{btn.disabled=false;btn.textContent="문의 접수하기"}
 });
-
-const escMap={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};
-function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>escMap[m])}
-const statusLabel={new:"접수 완료",consulting:"확인·상담중",quoted:"견적 안내",in_progress:"작업 진행중",completed:"완료",spam:"확인 불가"};
-async function loadMyInquiries(){
- const list=document.getElementById("inquiryList"), empty=document.getElementById("lookupEmpty");
- const saved=JSON.parse(localStorage.getItem("webcare_inquiries")||"[]"); list.innerHTML="";
- if(!saved.length){empty.hidden=false;return} empty.hidden=true;
- for(const x of saved){
-  try{
-   const r=await fetch("https://pxoqlvcpbyucafrflyhg.supabase.co/functions/v1/lookup-inquiry",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lookup_token:x.lookup_token})});
-   if(!r.ok) continue; const j=await r.json(), q=j.inquiry;
-   const el=document.createElement("article");el.className="inquiry-item";
-   el.innerHTML='<div class="inq-top"><strong>'+escapeHtml(q.public_id)+'</strong><span>'+escapeHtml(statusLabel[q.status]||q.status)+'</span></div><h3>'+escapeHtml(q.inquiry_type)+'</h3><p>'+escapeHtml(q.message)+'</p><time>'+new Date(q.created_at).toLocaleString("ko-KR")+'</time>'+(q.reply?'<div class="reply"><b>WebCare Dev 답변</b><p>'+escapeHtml(q.reply)+'</p></div>':'<div class="waiting">답변을 준비하고 있습니다.</div>');
-   list.appendChild(el);
-  }catch{}
- }
-}
-function showInquiryView(view){
- const write=view==="write"; document.getElementById("inquiryForm").hidden=!write;document.getElementById("myInquiry").hidden=write;
- document.querySelectorAll(".inquiry-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
- if(!write)loadMyInquiries();
-}
-document.querySelectorAll(".inquiry-tab").forEach(b=>b.addEventListener("click",()=>showInquiryView(b.dataset.view)));
 </script>
 <footer><div class="wrap">© 2026 WebCare Dev · Remote Web Development & Maintenance</div></footer>
 </body></html>
