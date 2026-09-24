@@ -90,6 +90,36 @@ section{position:relative;overflow:hidden}
 #contact .email-alt{grid-row:3;color:#b8cad6}
 footer{background:#03101a}
 @media(max-width:760px){#contact .wrap{display:block}#contact .cta{display:block}#contact .inquiry-form{margin-top:28px}.career{background-position:60% center}.steps{background-position:center}}
+
+/* mobile visual/readability correction */
+@media(max-width:760px){
+ header{position:sticky;background:rgba(4,18,30,.96)}
+ .nav{height:64px}.brand{font-size:18px}
+ .hero{min-height:620px}
+ #service{background:linear-gradient(rgba(246,241,231,.88),rgba(246,241,231,.92)),url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=84') center/cover}
+ #service .card{background:rgba(255,255,255,.90);border:1px solid rgba(255,255,255,.85);box-shadow:0 12px 28px rgba(10,35,54,.10)}
+ #portfolio .portfolio-grid .card{background-color:#0b263a;min-height:240px}
+ .career{background:linear-gradient(rgba(3,20,33,.78),rgba(3,20,33,.88)),url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=86') center/cover}
+ .career .trustbar{gap:12px}
+ .career .trustitem{background:rgba(5,28,45,.88);border:1px solid rgba(119,183,226,.32);color:#eaf3f8}
+ .career .trustitem strong{color:#73c4ff}
+ .career .trustitem,.career .trustitem *{text-shadow:none}
+ .career .career-list{color:#d5e0e7}
+ .steps{background:linear-gradient(rgba(4,22,35,.83),rgba(4,22,35,.90)),url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=84') center/cover;color:#fff}
+ .steps .title,.steps .sub{color:#fff}.steps .sub{color:#c9d5dd}
+ .steps .grid{padding:0;background:transparent;border:0;backdrop-filter:none}
+ .steps .card{background:rgba(7,31,49,.88);border:1px solid rgba(118,180,220,.27);border-top:3px solid #42a5ed;color:#fff}
+ .steps .card h3{color:#fff}.steps .card p{color:#c7d3dc}.steps .step:before{color:#67baf5}
+ .notice{background:rgba(8,35,54,.88);color:#d6e2e9;border-left-color:#55b4f4}
+ #contact{background:linear-gradient(rgba(3,18,30,.73),rgba(3,18,30,.90)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=88') 58% center/cover}
+ #contact .cta>h2{font-size:39px;line-height:1.35;margin-top:0}
+ #contact .notice{background:rgba(239,247,252,.92);color:#39566b;border-left-color:#2292e4}
+ #contact .inquiry-form{background:rgba(5,31,49,.94);border-color:rgba(126,191,232,.38);box-shadow:0 20px 55px rgba(0,0,0,.38)}
+ #contact .inquiry-form .field input,#contact .inquiry-form .field select,#contact .inquiry-form .field textarea{background:#173b52;border-color:#426278;color:#fff}
+ #contact .inquiry-form .field input::placeholder,#contact .inquiry-form .field textarea::placeholder{color:#a9bac5}
+ #contact .inquiry-form .field label{color:#e1ebf1}
+ #contact .inquiry-form .submit-btn{width:calc(100% - 40px);background:#1688ed}
+}
 </style><meta name="robots" content="index,follow">
 <link rel="canonical" href="https://webcaredev.github.io/">
 <meta property="og:title" content="웹사이트 유지보수·개발 | WebCare Dev">
