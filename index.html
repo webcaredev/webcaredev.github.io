@@ -153,6 +153,58 @@ footer{background:#03101a}
   #contact .email-alt{display:block!important;position:relative!important;margin:18px 0 0!important;padding:0 4px 8px!important;color:#b9cad5!important;line-height:1.6!important;z-index:3}
   footer{padding:26px 0 34px!important}
 }
+
+/* HARD MOBILE OVERRIDE — screenshot QA */
+@media screen and (max-width:800px){
+  header{position:relative!important;top:auto!important;background:#061827!important}
+  .nav{height:76px!important}
+  .brand{font-size:18px!important}
+  body{background:#061827!important}
+  section{padding:64px 0!important}
+  .hero{min-height:560px!important}
+
+  /* services: readable editorial cards */
+  #service{background:linear-gradient(rgba(246,241,231,.91),rgba(246,241,231,.94)),url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=86') center/cover!important}
+  #service .card{background:rgba(255,255,255,.94)!important;color:#102f48!important;border:0!important;box-shadow:0 10px 28px rgba(4,22,35,.12)!important}
+  #service .card p{color:#566975!important}
+
+  /* career: remove broken pale glass entirely */
+  .career{background:linear-gradient(rgba(2,17,29,.72),rgba(2,17,29,.91)),url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=88') center/cover!important;color:#fff!important}
+  .career .title{color:#fff!important}
+  .career .sub{color:#c9d8e2!important}
+  .career .trustbar{display:block!important;background:transparent!important;border:0!important;margin:28px 0!important}
+  .career .trustitem{display:block!important;background:#0b2b40!important;color:#fff!important;border:1px solid #315a73!important;border-radius:8px!important;padding:24px!important;margin:0 0 14px!important;backdrop-filter:none!important;opacity:1!important}
+  .career .trustitem strong{display:block!important;color:#70c4ff!important;opacity:1!important}
+  .career .trustitem p,.career .trustitem li,.career .trustitem span{color:#e8f0f5!important;opacity:1!important}
+  .career .grid{display:block!important;background:transparent!important;border:0!important}
+  .career .card{background:#0b2b40!important;color:#fff!important;border:1px solid #315a73!important;border-radius:8px!important;margin-bottom:14px!important;backdrop-filter:none!important}
+  .career .card h3{color:#fff!important}.career .card p,.career .career-list{color:#d8e5ec!important}
+  .career .promise{color:#e4edf2!important;background:rgba(5,30,47,.9)!important;padding:18px!important}
+
+  /* process: no hidden/dim title, compact dark cards */
+  .steps{background:linear-gradient(rgba(2,18,30,.76),rgba(2,18,30,.91)),url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=86') center/cover!important;color:#fff!important}
+  .steps .title{color:#fff!important;opacity:1!important;text-shadow:0 2px 15px rgba(0,0,0,.5)!important}
+  .steps .sub{color:#d1dde5!important;opacity:1!important}
+  .steps .grid{display:block!important;padding:0!important;background:transparent!important;border:0!important;backdrop-filter:none!important}
+  .steps .card{min-height:auto!important;background:#09283c!important;color:#fff!important;border:1px solid #315a73!important;border-top:3px solid #43a9ef!important;border-radius:7px!important;padding:24px!important;margin-bottom:14px!important}
+  .steps .card h3{color:#fff!important}.steps .card p{color:#d7e4eb!important}
+  .steps .step:before{color:#65bdf7!important;margin-bottom:12px!important}
+
+  /* contact: tighten bottom and ensure email is outside form */
+  #contact{padding:64px 0 38px!important;background:linear-gradient(rgba(2,17,29,.66),rgba(2,17,29,.9)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=88') center/cover!important}
+  #contact .wrap,#contact .cta{display:block!important}
+  #contact .cta>h2{font-size:36px!important;color:#fff!important;margin:0 0 12px!important}
+  #contact .cta>p{color:#d0dce4!important}
+  #contact .notice{background:#eef5f9!important;color:#3f5d70!important;margin:24px 0!important}
+  #contact .inquiry-form{display:block!important;margin:24px 0 0!important;width:100%!important;background:#082a40!important;border:1px solid #32617d!important;border-radius:12px!important;box-shadow:0 18px 45px rgba(0,0,0,.3)!important}
+  #contact .inquiry-form .form-grid{display:block!important;padding:20px!important}
+  #contact .inquiry-form .field{display:flex!important;margin-bottom:16px!important}
+  #contact .inquiry-form input,#contact .inquiry-form select,#contact .inquiry-form textarea{background:#173f57!important;color:#fff!important;border:1px solid #527086!important}
+  #contact .inquiry-form textarea{min-height:130px!important}
+  #contact .inquiry-form .submit-btn{display:block!important;width:calc(100% - 40px)!important;margin:4px 20px 24px!important}
+  #contact .email-alt{display:block!important;position:static!important;margin:18px 0 0!important;padding:0!important;color:#c5d5df!important;line-height:1.6!important}
+  footer{padding:24px 0 30px!important}
+}
 </style><meta name="robots" content="index,follow">
 <link rel="canonical" href="https://webcaredev.github.io/">
 <meta property="og:title" content="웹사이트 유지보수·개발 | WebCare Dev">
